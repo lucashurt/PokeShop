@@ -1,4 +1,4 @@
 package com.example.ecommercefull.auth.DTO;
 
-public record LoginRequest() {
+public record AuthResponse(String message) {
 }
