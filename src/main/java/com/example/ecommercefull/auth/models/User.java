@@ -3,8 +3,6 @@ package com.example.ecommercefull.auth.models;
 
 import jakarta.persistence.*;
 
-import java.util.Set;
-
 @Entity
 @Table(name = "users")
 public class User {
@@ -17,19 +15,15 @@ public class User {
     private String password;
     private String fullName;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "user_roles",
-            joinColumns = @JoinColumn(name="user_id"),
-            inverseJoinColumns = @JoinColumn(name="role_id")
-    )
-    private Set<Role> roles;
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Role role;
 
     public User() {}
-    public User(String username, String password, String fullName) {
+    public User(String username, String password, String fullName, Role role) {
         this.username = username;
         this.password = password;
         this.fullName = fullName;
+        this.role = role;
     }
 
     public Long getId() {return id;}
@@ -37,9 +31,9 @@ public class User {
     public String getUsername() {return username;}
     public String getPassword() {return password;}
     public String getFullName() {return fullName;}
-    public Set<Role> getRoles() {return roles;}
+    public Role getRole() {return role;}
     public void setUsername(String username) {this.username = username;}
     public void setPassword(String password) {this.password = password;}
     public void setFullName(String fullName) {this.fullName = fullName;}
-    public void addRole(String newRole) {roles.add(new Role(newRole));}
+    public void setRole(Role role) {this.role = role;}
 }

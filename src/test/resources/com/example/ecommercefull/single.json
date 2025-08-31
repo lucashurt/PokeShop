@@ -1,0 +1,8 @@
+{
+  "username": "lucas",
+  "password": "password",
+  "fullName": "lucas hurtado",
+  "role":{
+    "name": "CUSTOMER"
+  }
+}

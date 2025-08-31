@@ -3,11 +3,14 @@ package com.example.ecommercefull.auth;
 import com.example.ecommercefull.auth.DTO.AuthRequest;
 import com.example.ecommercefull.auth.DTO.AuthResponse;
 import com.example.ecommercefull.auth.DTO.RegisterRequest;
+import com.example.ecommercefull.auth.models.Role;
 import com.example.ecommercefull.auth.models.User;
 import com.example.ecommercefull.auth.repositories.RoleRepository;
 import com.example.ecommercefull.auth.repositories.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class AuthService {
@@ -25,19 +28,25 @@ public class AuthService {
         if(userRepository.findByUsername(registerRequest.username()).isPresent()) {
             return new AuthResponse("username already exists");
         }
-        if(roleRepository.findByName(registerRequest.role()).isEmpty()) {
+        Role role = roleRepository.findByName(registerRequest.role()).orElse(null);
+        if(role == null) {
             return new AuthResponse("role does not exists");
         }
         User user = new User();
         user.setUsername(registerRequest.username());
         user.setPassword(passwordEncoder.encode(registerRequest.password()));
         user.setFullName(registerRequest.fullName());
+        user.setRole(role);
         userRepository.save(user);
         return new AuthResponse("success");
     }
 
     public AuthResponse authenticate(AuthRequest authRequest) {
-        User user = userRepository.findByUsername(authRequest.username()).orElseThrow();
+        Optional<User> optionalUser = userRepository.findByUsername(authRequest.username());
+        if(optionalUser.isEmpty()) {
+            return new AuthResponse("invalid credentials");
+        }
+        User user = optionalUser.get();
         if (!passwordEncoder.matches(authRequest.password(), user.getPassword())) {
             return new AuthResponse("invalid credentials");
         }

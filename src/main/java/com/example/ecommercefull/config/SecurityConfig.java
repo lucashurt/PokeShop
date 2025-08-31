@@ -1,6 +1,5 @@
 package com.example.ecommercefull.config;
 
-import com.example.ecommercefull.auth.models.Role;
 import com.example.ecommercefull.auth.repositories.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,7 +40,7 @@ public class SecurityConfig {
                 .map(user -> org.springframework.security.core.userdetails.User
                         .withUsername(user.getUsername())
                         .password(user.getPassword())
-                        .roles(user.getRoles().stream().map(Role::getName).toArray(String[]::new))
+                        .roles(user.getRole().getName())
                         .build())
                 .orElseThrow();
     }

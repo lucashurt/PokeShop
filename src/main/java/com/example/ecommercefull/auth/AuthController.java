@@ -13,12 +13,12 @@ public class AuthController {
         this.authService = authService;
     }
 
-    @GetMapping
+    @PostMapping("/login")
     public AuthResponse login(@RequestBody AuthRequest authRequest) {
         return authService.authenticate(authRequest);
     }
 
-    @PostMapping
+    @PostMapping("/register")
     public AuthResponse register(@RequestBody RegisterRequest registerRequest) {
         return authService.register(registerRequest);
     }

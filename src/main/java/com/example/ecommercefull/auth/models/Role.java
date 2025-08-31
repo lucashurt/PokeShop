@@ -18,5 +18,7 @@ public class Role {
     }
 
     public String getName() {return name;}
-    public void setRole(String role) {}
+    public void setName(String name) {
+        this.name = name;
+    }
 }
