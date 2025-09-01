@@ -1,6 +1,7 @@
 package com.example.ecommercefull.product;
 
 import com.example.ecommercefull.auth.models.Business;
+import com.example.ecommercefull.auth.models.User;
 import com.example.ecommercefull.auth.repositories.UserRepository;
 import com.example.ecommercefull.product.DTOs.ProductRequest;
 import com.example.ecommercefull.product.DTOs.ProductResponse;
@@ -20,17 +21,29 @@ public class ProductService {
     }
 
     public ProductResponse createProduct(ProductRequest productRequest,String businessUsername) {
-        Business business = (Business)userRepository.findByUsername(businessUsername)
+        System.out.println("== createProduct START ==");
+        System.out.println("businessUsername = " + businessUsername);
+        System.out.println("productRequest = " + productRequest); // record toString or build manually
+
+        System.out.println("userRepository == null? " + (userRepository == null));
+        System.out.println("productRepository == null? " + (productRepository == null));
+
+        User user = userRepository.findByUsername(businessUsername)
                 .orElseThrow(() -> new RuntimeException("Business not found"));
-        Product product = new Product(
-                productRequest.name(),
-                productRequest.description(),
-                productRequest.price(),
-                productRequest.stock(),
-                business
-        );
-        productRepository.save(product);
-        return ProductResponse.fromEntity(product);
+        if(!(user instanceof  Business)){
+            throw new IllegalStateException("User is not a Business");
+        }
+        Business business = (Business)user;
+        Product product = new Product();
+        product.setName(productRequest.name());
+        product.setDescription(productRequest.description());
+        product.setPrice(productRequest.price());
+        product.setStock(productRequest.stock());
+        product.setBusiness(business);
+        business.addProduct(product);
+
+        Product savedProduct = productRepository.save(product);
+        return ProductResponse.fromEntity(savedProduct);
     }
 
     public ProductResponse findById(Long id){

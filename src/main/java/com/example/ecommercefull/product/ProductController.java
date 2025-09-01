@@ -4,6 +4,7 @@ import com.example.ecommercefull.product.DTOs.ProductRequest;
 import com.example.ecommercefull.product.DTOs.ProductResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,8 +32,8 @@ public class ProductController {
 
     @PostMapping
     @PreAuthorize("hasRole('BUSINESS')")
-    public ResponseEntity<ProductResponse> createProduct(@RequestBody ProductRequest productRequest, @AuthenticationPrincipal Principal principal) {
-        String username = principal.getName();
+    public ResponseEntity<ProductResponse> createProduct(@RequestBody ProductRequest productRequest, Authentication authentication) {
+        String username = authentication.getName();
         ProductResponse response = productService.createProduct(productRequest, username);
         return ResponseEntity.ok(response);
     }
