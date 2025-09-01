@@ -19,7 +19,7 @@ public class ProductService {
         this.userRepository = userRepository;
     }
 
-    public ProductResponse create(ProductRequest productRequest,String businessUsername) {
+    public ProductResponse createProduct(ProductRequest productRequest,String businessUsername) {
         Business business = (Business)userRepository.findByUsername(businessUsername)
                 .orElseThrow(() -> new RuntimeException("Business not found"));
         Product product = new Product(
@@ -29,6 +29,7 @@ public class ProductService {
                 productRequest.stock(),
                 business
         );
+        productRepository.save(product);
         return ProductResponse.fromEntity(product);
     }
 
