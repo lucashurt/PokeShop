@@ -1,6 +1,7 @@
 package com.example.ecommercefull.cart.models;
 
 import com.example.ecommercefull.auth.models.User;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ public class Cart {
 
     @OneToOne
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private User user;
 
     @OneToMany(mappedBy = "cart",cascade = CascadeType.ALL)

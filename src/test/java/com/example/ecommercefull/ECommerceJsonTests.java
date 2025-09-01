@@ -21,24 +21,30 @@ public class ECommerceJsonTests {
     void userSerializationTest() throws IOException {
         Role role = new Role("CUSTOMER");
         User user = new User("lucas", "password", "lucas hurtado", role);
-        assertThat(json.write(user)).isEqualTo("single.json");
+        assertThat(json.write(user)).isEqualTo("user.json");
     }
 
     @Test
     void userDeserializationTest() throws IOException {
         String expectedJson = """
                 {
-                  "username": "lucas",
-                  "password": "password",
-                  "fullName": "lucas hurtado",
-                  "role": {
-                    "name": "CUSTOMER"
-                  }
-                }
+                   "username": "lucas",
+                   "password": "password",
+                   "fullName": "lucas hurtado",
+                   "role": {
+                     "name": "CUSTOMER"
+                   },
+                   "cart": {
+                       "id": null,
+                       "cartItems": []
+                   }
+                 }
                 """;
         assertThat(json.parse(expectedJson).getObject().getUsername()).isEqualTo("lucas");
         assertThat(json.parse(expectedJson).getObject().getPassword()).isEqualTo("password");
         assertThat(json.parse(expectedJson).getObject().getFullName()).isEqualTo("lucas hurtado");
         assertThat(json.parse(expectedJson).getObject().getRole().getName()).isEqualTo("CUSTOMER");
+        assertThat(json.parse(expectedJson).getObject().getCart().getId()).isNull();
+        assertThat(json.parse(expectedJson).getObject().getCart().getCartItems().isEmpty()).isTrue();
     }
 }

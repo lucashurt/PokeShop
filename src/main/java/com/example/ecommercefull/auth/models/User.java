@@ -2,6 +2,7 @@ package com.example.ecommercefull.auth.models;
 
 
 import com.example.ecommercefull.cart.models.Cart;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -19,7 +20,8 @@ public class User {
     @ManyToOne(fetch = FetchType.EAGER)
     private Role role;
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private Cart cart;
 
     public User() {
@@ -32,6 +34,8 @@ public class User {
         this.password = password;
         this.fullName = fullName;
         this.role = role;
+        this.cart = new Cart();
+        this.cart.setUser(this);
     }
 
     public Long getId() {return id;}
@@ -40,6 +44,8 @@ public class User {
     public String getPassword() {return password;}
     public String getFullName() {return fullName;}
     public Role getRole() {return role;}
+    public Cart getCart() {return cart;}
+    public void setCart(Cart cart) {this.cart = cart;}
     public void setUsername(String username) {this.username = username;}
     public void setPassword(String password) {this.password = password;}
     public void setFullName(String fullName) {this.fullName = fullName;}
