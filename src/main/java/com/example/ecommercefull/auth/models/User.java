@@ -1,7 +1,7 @@
 package com.example.ecommercefull.auth.models;
 
 
-import com.example.ecommercefull.cart.model.Cart;
+import com.example.ecommercefull.cart.models.Cart;
 import jakarta.persistence.*;
 
 @Entity

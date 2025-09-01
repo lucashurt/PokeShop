@@ -1,7 +1,7 @@
-package com.example.ecommercefull.product.model;
+package com.example.ecommercefull.product;
 
 import com.example.ecommercefull.auth.models.Business;
-import com.example.ecommercefull.cart.model.CartItem;
+import com.example.ecommercefull.cart.models.CartItem;
 import jakarta.persistence.*;
 
 import java.util.List;

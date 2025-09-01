@@ -1,6 +1,6 @@
 package com.example.ecommercefull.auth.models;
 
-import com.example.ecommercefull.product.model.Product;
+import com.example.ecommercefull.product.Product;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;

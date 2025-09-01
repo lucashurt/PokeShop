@@ -1,6 +1,6 @@
-package com.example.ecommercefull.cart.model;
+package com.example.ecommercefull.cart.models;
 
-import com.example.ecommercefull.product.model.Product;
+import com.example.ecommercefull.product.Product;
 import jakarta.persistence.*;
 
 @Entity

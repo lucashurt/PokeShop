@@ -1,4 +1,4 @@
-package com.example.ecommercefull.cart.model;
+package com.example.ecommercefull.cart.models;
 
 import com.example.ecommercefull.auth.models.User;
 import jakarta.persistence.*;
