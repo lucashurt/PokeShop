@@ -1,6 +1,7 @@
 package com.example.ecommercefull.auth.models;
 
 
+import com.example.ecommercefull.cart.model.Cart;
 import jakarta.persistence.*;
 
 @Entity
@@ -18,7 +19,14 @@ public class User {
     @ManyToOne(fetch = FetchType.EAGER)
     private Role role;
 
-    public User() {}
+    @OneToOne(mappedBy = "user")
+    private Cart cart;
+
+    public User() {
+        this.cart = new Cart();
+        cart.setUser(this);
+    }
+
     public User(String username, String password, String fullName, Role role) {
         this.username = username;
         this.password = password;
