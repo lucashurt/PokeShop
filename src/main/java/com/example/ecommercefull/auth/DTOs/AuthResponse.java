@@ -1,4 +1,4 @@
-package com.example.ecommercefull.auth.DTO;
+package com.example.ecommercefull.auth.DTOs;
 
 public record AuthResponse(String message) {
 }

@@ -1,8 +1,8 @@
 package com.example.ecommercefull;
 
-import com.example.ecommercefull.auth.DTO.AuthRequest;
-import com.example.ecommercefull.auth.DTO.AuthResponse;
-import com.example.ecommercefull.auth.DTO.RegisterRequest;
+import com.example.ecommercefull.auth.DTOs.AuthRequest;
+import com.example.ecommercefull.auth.DTOs.AuthResponse;
+import com.example.ecommercefull.auth.DTOs.RegisterRequest;
 import com.example.ecommercefull.auth.models.Role;
 import com.example.ecommercefull.auth.models.User;
 import com.example.ecommercefull.auth.repositories.RoleRepository;
@@ -37,8 +37,14 @@ public class AuthApplicationTests {
         Role role = new Role("CUSTOMER");
         roleRepository.save(role);
 
+        Role role2 = new Role("BUSINESS");
+        roleRepository.save(role2);
+
         User user = new User("yuly",passwordEncoder.encode("password"),"yulissa morejon",role);
         userRepository.save(user);
+
+        User user2 = new User("marlon",passwordEncoder.encode("password"),"marlon pavoni",role2);
+        userRepository.save(user2);
     }
 
     @Test
@@ -51,7 +57,17 @@ public class AuthApplicationTests {
         assertThat(user.getUsername()).isEqualTo("lucas");
         assertThat(user.getFullName()).isEqualTo("lucas hurtado");
         assertThat(user.getRole().getName()).isEqualTo("CUSTOMER");
+    }
 
+    @Test
+    void shouldCreateBusinessUser() {
+        RegisterRequest registerRequest = new RegisterRequest("lucas","password","lucas hurtado","BUSINESS");
+        AuthResponse authResponse = restTemplate.postForObject("/auth/register", registerRequest, AuthResponse.class);
+        assertThat(authResponse.message()).isEqualTo("success");
+        User user = userRepository.findByUsername("lucas").get();
+        assertThat(user.getUsername()).isEqualTo("lucas");
+        assertThat(user.getFullName()).isEqualTo("lucas hurtado");
+        assertThat(user.getRole().getName()).isEqualTo("BUSINESS");
     }
 
     @Test
@@ -75,4 +91,27 @@ public class AuthApplicationTests {
                 .postForObject("/auth/login", authRequest, AuthResponse.class);
         assertThat(authResponse.message()).isEqualTo("success");
     }
-}
+
+    @Test
+    void shouldAuthenticateBusinessUser(){
+        AuthRequest authRequest = new AuthRequest("marlon","password");
+        AuthResponse authResponse = restTemplate
+                .postForObject("/auth/login", authRequest, AuthResponse.class);
+        assertThat(authResponse.message()).isEqualTo("success");
+    }
+
+    @Test
+    void shouldNotReturnIncorrectPassword(){
+        AuthRequest authRequest = new AuthRequest("yuly","wrongPassword");
+        AuthResponse authResponse = restTemplate
+                .postForObject("/auth/login", authRequest, AuthResponse.class);
+        assertThat(authResponse.message()).isEqualTo("invalid credentials");
+    }
+    @Test
+    void shouldNotReturnIncorrectUsername() {
+        AuthRequest authRequest = new AuthRequest("yuky", "password");
+        AuthResponse authResponse = restTemplate
+                .postForObject("/auth/login", authRequest, AuthResponse.class);
+        assertThat(authResponse.message()).isEqualTo("invalid credentials");
+    }
+    }

@@ -24,7 +24,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/h2-console/**").permitAll() // allow H2 console
-                        .requestMatchers("/auth").permitAll()
+                        .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/product/add").hasRole("BUSINESS"));
         return http.build();
     }

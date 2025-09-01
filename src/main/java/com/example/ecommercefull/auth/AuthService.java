@@ -1,8 +1,9 @@
 package com.example.ecommercefull.auth;
 
-import com.example.ecommercefull.auth.DTO.AuthRequest;
-import com.example.ecommercefull.auth.DTO.AuthResponse;
-import com.example.ecommercefull.auth.DTO.RegisterRequest;
+import com.example.ecommercefull.auth.DTOs.AuthRequest;
+import com.example.ecommercefull.auth.DTOs.AuthResponse;
+import com.example.ecommercefull.auth.DTOs.RegisterRequest;
+import com.example.ecommercefull.auth.models.Business;
 import com.example.ecommercefull.auth.models.Role;
 import com.example.ecommercefull.auth.models.User;
 import com.example.ecommercefull.auth.repositories.RoleRepository;
@@ -33,6 +34,11 @@ public class AuthService {
             return new AuthResponse("role does not exists");
         }
         User user = new User();
+
+        if(role.getName().equals("BUSINESS")){
+            user = new Business();
+        }
+
         user.setUsername(registerRequest.username());
         user.setPassword(passwordEncoder.encode(registerRequest.password()));
         user.setFullName(registerRequest.fullName());

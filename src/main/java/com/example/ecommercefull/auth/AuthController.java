@@ -1,8 +1,8 @@
 package com.example.ecommercefull.auth;
 
-import com.example.ecommercefull.auth.DTO.AuthRequest;
-import com.example.ecommercefull.auth.DTO.AuthResponse;
-import com.example.ecommercefull.auth.DTO.RegisterRequest;
+import com.example.ecommercefull.auth.DTOs.AuthRequest;
+import com.example.ecommercefull.auth.DTOs.AuthResponse;
+import com.example.ecommercefull.auth.DTOs.RegisterRequest;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
