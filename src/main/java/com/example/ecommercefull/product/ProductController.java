@@ -5,16 +5,14 @@ import com.example.ecommercefull.product.DTOs.ProductResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.List;
 
 @RestController
 @RequestMapping("/products")
 public class ProductController {
-    private ProductService productService;
+    private final ProductService productService;
     public ProductController(ProductService productService) {
         this.productService = productService;
     }
@@ -24,9 +22,9 @@ public class ProductController {
         return ResponseEntity.ok(productService.findById(requestedId));
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<ProductResponse>> getAllProducts() {
-        List<ProductResponse> products = productService.findAll();
+    @GetMapping("/{requestedBusiness}/inventory")
+    public ResponseEntity<List<ProductResponse>> getProducts(@PathVariable String requestedBusiness) {
+        List<ProductResponse> products = productService.findAll(requestedBusiness);
         return ResponseEntity.ok(products);
     }
 

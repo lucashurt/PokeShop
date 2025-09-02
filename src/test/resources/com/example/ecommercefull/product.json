@@ -1,0 +1,11 @@
+{
+  "id": null,
+  "name": "product",
+  "description": "product description",
+  "price": 19.99,
+  "stock": 5,
+  "business": {
+    "id": null,
+    "username": "business"
+  }
+}

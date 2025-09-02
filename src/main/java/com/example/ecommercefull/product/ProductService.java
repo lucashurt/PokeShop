@@ -8,12 +8,11 @@ import com.example.ecommercefull.product.DTOs.ProductResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
-    private ProductRepository productRepository;
-    private UserRepository userRepository;
+    private final ProductRepository productRepository;
+    private final UserRepository userRepository;
 
     public ProductService(ProductRepository productRepository, UserRepository userRepository) {
         this.productRepository = productRepository;
@@ -30,6 +29,7 @@ public class ProductService {
 
         User user = userRepository.findByUsername(businessUsername)
                 .orElseThrow(() -> new RuntimeException("Business not found"));
+
         if(!(user instanceof  Business)){
             throw new IllegalStateException("User is not a Business");
         }
@@ -51,8 +51,16 @@ public class ProductService {
         return ProductResponse.fromEntity(product);
     }
 
-    public List<ProductResponse> findAll(){
-        return productRepository.findAll()
+    public List<ProductResponse> findAll(String username){
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if(!(user instanceof  Business)){
+            throw new IllegalStateException("User is not a Business");
+        }
+        Business business = (Business)user;
+
+        return productRepository.findAllByBusinessId(business.getId())
                 .stream()
                 .map(ProductResponse::fromEntity)
                 .toList();

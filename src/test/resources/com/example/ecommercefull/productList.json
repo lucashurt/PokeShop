@@ -1,0 +1,24 @@
+[
+  {
+    "id": null,
+    "name": "product",
+    "description": "product description",
+    "price": 19.99,
+    "stock": 5,
+    "business": {
+      "id": null,
+      "username": "business"
+    }
+  },
+  {
+    "id": null,
+    "name": "product2",
+    "description": "another product description",
+    "price": 19.99,
+    "stock": 5,
+    "business": {
+      "id": null,
+      "username": "business"
+    }
+  }
+]
