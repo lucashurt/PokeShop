@@ -40,7 +40,6 @@ public class PaymentController {
     public ResponseEntity<String> handleWebhook(
             @RequestBody String payload,
             @RequestHeader("Stripe-Signature") String signature) {
-        // Webhook handling implementation
         return ResponseEntity.ok("Webhook received");
     }
 }

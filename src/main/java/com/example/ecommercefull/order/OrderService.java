@@ -1,8 +1,7 @@
-package com.example.ecommercefull.order.services;
+package com.example.ecommercefull.order;
 
 import com.example.ecommercefull.auth.repositories.UserRepository;
 import com.example.ecommercefull.order.DTOs.OrderResponse;
-import com.example.ecommercefull.order.OrderRepository;
 import com.example.ecommercefull.order.models.Order;
 import com.example.ecommercefull.order.models.OrderStatus;
 import org.springframework.stereotype.Service;
@@ -34,7 +33,7 @@ public class OrderService {
         return OrderResponse.fromEntity(order);
     }
 
-    public OrderResponse updateOrderStatus(Long orderId, OrderStatus orderStatus, String username) {
+    public void updateOrderStatus(Long orderId, OrderStatus orderStatus, String username) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order Not Found"));
         boolean owner = order.getOrderItems().stream()
@@ -44,7 +43,6 @@ public class OrderService {
         }
         order.setOrderStatus(orderStatus);
         Order savedOrder = orderRepository.save(order);
-        return OrderResponse.fromEntity(savedOrder);
     }
 
     public void cancelOrder(Long orderId, String username) {
