@@ -2,8 +2,11 @@ package com.example.ecommercefull.auth.models;
 
 
 import com.example.ecommercefull.cart.models.Cart;
+import com.example.ecommercefull.order.models.Order;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -23,6 +26,9 @@ public class User {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference
     private Cart cart;
+
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    private Set<Order> orders;
 
     public User() {
         this.cart = new Cart();
