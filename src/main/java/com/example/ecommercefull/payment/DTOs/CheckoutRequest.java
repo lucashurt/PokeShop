@@ -1,4 +1,4 @@
-package com.example.ecommercefull.order.DTOs;
+package com.example.ecommercefull.payment.DTOs;
 
 import java.util.Map;
 

@@ -1,4 +1,4 @@
-package com.example.ecommercefull.order.controllers;
+package com.example.ecommercefull.order;
 
 import com.example.ecommercefull.order.DTOs.OrderResponse;
 import com.example.ecommercefull.order.DTOs.OrderStatusRequest;
