@@ -44,7 +44,7 @@ public class SecurityConfig {
                 .map(user -> org.springframework.security.core.userdetails.User
                         .withUsername(user.getUsername())
                         .password(user.getPassword())
-                        .roles(user.getRole().getName())
+                        .authorities(user.getRole().name())
                         .build())
                 .orElseThrow();
     }

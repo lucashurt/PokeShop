@@ -2,9 +2,7 @@
   "username": "lucas",
   "password": "password",
   "fullName": "lucas hurtado",
-  "role": {
-    "name": "CUSTOMER"
-  },
+  "role": "ROLE_BUSINESS",
   "cart": {
       "id": null,
       "cartItems": []

@@ -14,7 +14,7 @@ public class Business extends User {
     private List<Product> products = new ArrayList<>();
 
     public Business() {}
-    public Business(String username, String password, String fullName, Role role) {
+    public Business(String username, String password, String fullName, RoleEnum role) {
         super(username, password, fullName, role);
     }
 

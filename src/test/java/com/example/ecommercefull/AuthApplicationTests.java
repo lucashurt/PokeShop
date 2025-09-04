@@ -3,9 +3,8 @@ package com.example.ecommercefull;
 import com.example.ecommercefull.auth.DTOs.AuthRequest;
 import com.example.ecommercefull.auth.DTOs.AuthResponse;
 import com.example.ecommercefull.auth.DTOs.RegisterRequest;
-import com.example.ecommercefull.auth.models.Role;
+import com.example.ecommercefull.auth.models.RoleEnum;
 import com.example.ecommercefull.auth.models.User;
-import com.example.ecommercefull.auth.repositories.RoleRepository;
 import com.example.ecommercefull.auth.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,25 +24,16 @@ public class AuthApplicationTests {
     private UserRepository userRepository;
 
     @Autowired
-    private RoleRepository roleRepository;
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @BeforeEach
     public void setup() {
         userRepository.deleteAll();
-        roleRepository.deleteAll();
 
-        Role role = new Role("CUSTOMER");
-        roleRepository.save(role);
-
-        Role role2 = new Role("BUSINESS");
-        roleRepository.save(role2);
-
-        User user = new User("yuly",passwordEncoder.encode("password"),"yulissa morejon",role);
+        User user = new User("yuly",passwordEncoder.encode("password"),"yulissa morejon", RoleEnum.ROLE_CUSTOMER);
         userRepository.save(user);
 
-        User user2 = new User("marlon",passwordEncoder.encode("password"),"marlon pavoni",role2);
+        User user2 = new User("marlon",passwordEncoder.encode("password"),"marlon pavoni",RoleEnum.ROLE_BUSINESS);
         userRepository.save(user2);
     }
 
@@ -56,7 +46,7 @@ public class AuthApplicationTests {
         User user = userRepository.findByUsername("lucas").get();
         assertThat(user.getUsername()).isEqualTo("lucas");
         assertThat(user.getFullName()).isEqualTo("lucas hurtado");
-        assertThat(user.getRole().getName()).isEqualTo("CUSTOMER");
+        assertThat(user.getRole()).isEqualTo(RoleEnum.ROLE_CUSTOMER);
     }
 
     @Test
@@ -67,7 +57,7 @@ public class AuthApplicationTests {
         User user = userRepository.findByUsername("lucas").get();
         assertThat(user.getUsername()).isEqualTo("lucas");
         assertThat(user.getFullName()).isEqualTo("lucas hurtado");
-        assertThat(user.getRole().getName()).isEqualTo("BUSINESS");
+        assertThat(user.getRole()).isEqualTo(RoleEnum.ROLE_BUSINESS);
     }
 
     @Test
@@ -81,7 +71,7 @@ public class AuthApplicationTests {
     void shouldNotCreateUserWithIncorrectRole(){
         RegisterRequest registerRequest = new RegisterRequest("lucas","password","yulissa morejon","BAD_ROLE");
         AuthResponse authResponse = restTemplate.postForObject("/auth/register", registerRequest, AuthResponse.class);
-        assertThat(authResponse.message()).isEqualTo("role does not exists");
+        assertThat(authResponse.message()).isEqualTo("role does not exist");
     }
 
     @Test

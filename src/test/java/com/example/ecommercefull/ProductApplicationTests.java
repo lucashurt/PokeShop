@@ -1,9 +1,8 @@
 package com.example.ecommercefull;
 
 import com.example.ecommercefull.auth.models.Business;
-import com.example.ecommercefull.auth.models.Role;
+import com.example.ecommercefull.auth.models.RoleEnum;
 import com.example.ecommercefull.auth.models.User;
-import com.example.ecommercefull.auth.repositories.RoleRepository;
 import com.example.ecommercefull.auth.repositories.UserRepository;
 import com.example.ecommercefull.product.DTOs.ProductRequest;
 import com.example.ecommercefull.product.DTOs.ProductResponse;
@@ -33,8 +32,6 @@ public class ProductApplicationTests {
     @Autowired
     private ProductRepository productRepository;
     @Autowired
-    private RoleRepository roleRepository;
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
     private Product savedProduct;
@@ -43,13 +40,9 @@ public class ProductApplicationTests {
     public void setup() {
         productRepository.deleteAll();
         userRepository.deleteAll();
-        roleRepository.deleteAll();
 
-        Role businessRole = roleRepository.save(new Role("BUSINESS"));
-        Role customerRole = roleRepository.save(new Role("CUSTOMER"));
-
-        Business businessUser = new Business("business",passwordEncoder.encode("password"),"TestStore",businessRole);
-        User customerUser = new User("customer",passwordEncoder.encode("password"),"TestCustomer",customerRole);
+        Business businessUser = new Business("business",passwordEncoder.encode("password"),"TestStore", RoleEnum.ROLE_BUSINESS);
+        User customerUser = new User("customer",passwordEncoder.encode("password"),"TestCustomer",RoleEnum.ROLE_CUSTOMER);
 
         userRepository.save(customerUser);
         userRepository.save(businessUser);

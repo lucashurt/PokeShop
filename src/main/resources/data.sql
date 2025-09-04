@@ -1,2 +1,0 @@
-INSERT INTO role (name) VALUES ('CUSTOMER');
-INSERT INTO role (name) VALUES ('BUSINESS')

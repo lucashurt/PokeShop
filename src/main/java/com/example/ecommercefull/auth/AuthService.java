@@ -4,9 +4,8 @@ import com.example.ecommercefull.auth.DTOs.AuthRequest;
 import com.example.ecommercefull.auth.DTOs.AuthResponse;
 import com.example.ecommercefull.auth.DTOs.RegisterRequest;
 import com.example.ecommercefull.auth.models.Business;
-import com.example.ecommercefull.auth.models.Role;
+import com.example.ecommercefull.auth.models.RoleEnum;
 import com.example.ecommercefull.auth.models.User;
-import com.example.ecommercefull.auth.repositories.RoleRepository;
 import com.example.ecommercefull.auth.repositories.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -16,12 +15,10 @@ import java.util.Optional;
 @Service
 public class AuthService {
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public AuthService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+    public AuthService(UserRepository userRepository,PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -29,20 +26,27 @@ public class AuthService {
         if(userRepository.findByUsername(registerRequest.username()).isPresent()) {
             return new AuthResponse("username already exists");
         }
-        Role role = roleRepository.findByName(registerRequest.role()).orElse(null);
-        if(role == null) {
-            return new AuthResponse("role does not exists");
-        }
-        User user = new User();
+        RoleEnum userRole;
 
-        if(role.getName().equals("BUSINESS")){
+        if ("BUSINESS".equalsIgnoreCase(registerRequest.role())) {
+            userRole = RoleEnum.ROLE_BUSINESS;
+        } else if ("CUSTOMER".equalsIgnoreCase(registerRequest.role())) {
+            userRole = RoleEnum.ROLE_CUSTOMER;
+        } else {
+            return new AuthResponse("role does not exist");
+        }
+
+        User user;
+        if(userRole == RoleEnum.ROLE_BUSINESS){
             user = new Business();
         }
-
+        else{
+            user = new User();
+        }
         user.setUsername(registerRequest.username());
         user.setPassword(passwordEncoder.encode(registerRequest.password()));
         user.setFullName(registerRequest.fullName());
-        user.setRole(role);
+        user.setRole(userRole);
         userRepository.save(user);
         return new AuthResponse("success");
     }

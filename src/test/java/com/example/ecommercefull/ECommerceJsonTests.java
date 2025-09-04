@@ -1,7 +1,7 @@
 package com.example.ecommercefull;
 
 import com.example.ecommercefull.auth.models.Business;
-import com.example.ecommercefull.auth.models.Role;
+import com.example.ecommercefull.auth.models.RoleEnum;
 import com.example.ecommercefull.auth.models.User;
 import com.example.ecommercefull.product.Product;
 import org.junit.jupiter.api.Test;
@@ -27,8 +27,7 @@ public class ECommerceJsonTests {
 
     @Test
     void userSerializationTest() throws IOException {
-        Role role = new Role("CUSTOMER");
-        User user = new User("lucas", "password", "lucas hurtado", role);
+        User user = new User("lucas", "password", "lucas hurtado", RoleEnum.ROLE_BUSINESS);
         assertThat(userJSON.write(user)).isEqualTo("user.json");
     }
 
@@ -39,9 +38,7 @@ public class ECommerceJsonTests {
                    "username": "lucas",
                    "password": "password",
                    "fullName": "lucas hurtado",
-                   "role": {
-                     "name": "CUSTOMER"
-                   },
+                   "role": "ROLE_BUSINESS",
                    "cart": {
                        "id": null,
                        "cartItems": []
@@ -51,14 +48,14 @@ public class ECommerceJsonTests {
         assertThat(userJSON.parse(expectedJson).getObject().getUsername()).isEqualTo("lucas");
         assertThat(userJSON.parse(expectedJson).getObject().getPassword()).isEqualTo("password");
         assertThat(userJSON.parse(expectedJson).getObject().getFullName()).isEqualTo("lucas hurtado");
-        assertThat(userJSON.parse(expectedJson).getObject().getRole().getName()).isEqualTo("CUSTOMER");
+        assertThat(userJSON.parse(expectedJson).getObject().getRole()).isEqualTo(RoleEnum.ROLE_BUSINESS);
         assertThat(userJSON.parse(expectedJson).getObject().getCart().getId()).isNull();
         assertThat(userJSON.parse(expectedJson).getObject().getCart().getCartItems().isEmpty()).isTrue();
     }
 
     @Test
     void productSerializationTest() throws IOException {
-        Business business = new Business("business","password","business account",new Role("BUSINESS"));
+        Business business = new Business("business","password","business account",RoleEnum.ROLE_BUSINESS);
         Product product = new Product("product","product description",19.99,5,business);
         assertThat(productJSON.write(product)).isEqualTo("product.json");
     }
@@ -88,7 +85,7 @@ public class ECommerceJsonTests {
 
     @Test
     void productListSerializationTest() throws IOException {
-        Business business = new Business("business","password","business account",new Role("BUSINESS"));
+        Business business = new Business("business","password","business account",RoleEnum.ROLE_BUSINESS);
         Product product1 = new Product("product","product description",19.99,5,business);
         Product product2 = new Product("product2","another product description",19.99,5,business);
         List<Product> products = new ArrayList<>();

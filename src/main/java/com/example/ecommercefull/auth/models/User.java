@@ -17,8 +17,8 @@ public class User {
     private String password;
     private String fullName;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    private Role role;
+    @Enumerated(EnumType.STRING)
+    private RoleEnum role;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference
@@ -29,7 +29,7 @@ public class User {
         cart.setUser(this);
     }
 
-    public User(String username, String password, String fullName, Role role) {
+    public User(String username, String password, String fullName, RoleEnum role) {
         this.username = username;
         this.password = password;
         this.fullName = fullName;
@@ -43,11 +43,11 @@ public class User {
     public String getUsername() {return username;}
     public String getPassword() {return password;}
     public String getFullName() {return fullName;}
-    public Role getRole() {return role;}
+    public RoleEnum getRole() {return role;}
     public Cart getCart() {return cart;}
     public void setCart(Cart cart) {this.cart = cart;}
     public void setUsername(String username) {this.username = username;}
     public void setPassword(String password) {this.password = password;}
     public void setFullName(String fullName) {this.fullName = fullName;}
-    public void setRole(Role role) {this.role = role;}
+    public void setRole(RoleEnum role) {this.role = role;}
 }
