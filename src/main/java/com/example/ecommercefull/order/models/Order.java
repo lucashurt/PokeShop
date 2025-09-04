@@ -23,7 +23,7 @@ public class Order {
     private List<OrderItem> orderItems = new ArrayList<>();
 
     private Double Total;
-    private String StripePaymentIntentId;
+    private String stripePaymentIntentId;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
@@ -46,8 +46,8 @@ public class Order {
     public void setOrderItems(List<OrderItem> orderItems) {this.orderItems = orderItems;}
     public Double getTotal() {return Total;}
     public void setTotal(Double total) {this.Total = total;}
-    public String getStripePaymentIntentId() {return StripePaymentIntentId;}
-    public void setStripePaymentIntentId(String StripePaymentIntentId) {this.StripePaymentIntentId = StripePaymentIntentId;}
+    public String getStripePaymentIntentId() {return stripePaymentIntentId;}
+    public void setStripePaymentIntentId(String stripePaymentIntentId) {this.stripePaymentIntentId = stripePaymentIntentId;}
     public OrderStatus getOrderStatus() {return orderStatus;}
     public void setOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
