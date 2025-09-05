@@ -29,6 +29,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/h2-console/**").permitAll() // allow H2 console
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/payment/webhook").permitAll()
                         .anyRequest().authenticated());
         return http.build();
     }

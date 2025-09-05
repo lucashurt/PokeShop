@@ -2,6 +2,7 @@ package com.example.ecommercefull.order;
 
 import com.example.ecommercefull.order.DTOs.OrderResponse;
 import com.example.ecommercefull.order.DTOs.OrderStatusRequest;
+import com.example.ecommercefull.order.services.OrderService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -34,9 +35,9 @@ public class OrderController {
 
     @PostMapping("/{orderId}/status")
     @PreAuthorize("hasRole('BUSINESS')")
-    public ResponseEntity<String> updateOrderStatus(@PathVariable Long orderId, @RequestBody OrderStatusRequest orderStatusRequest,Authentication authentication) {
-        orderService.updateOrderStatus(orderId,orderStatusRequest.status(),authentication.getName());
-        return ResponseEntity.ok("Order status updated successfully");
+    public ResponseEntity<OrderResponse> updateOrderStatus(@PathVariable Long orderId, OrderStatusRequest orderStatusRequest,Authentication authentication) {
+        OrderResponse orderResponse = orderService.updateOrderStatus(orderId,orderStatusRequest.status(),authentication.getName());
+        return ResponseEntity.ok(orderResponse);
     }
 
     @PostMapping("/{orderId}/cancel")

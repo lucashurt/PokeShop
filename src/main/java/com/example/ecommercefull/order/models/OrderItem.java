@@ -10,11 +10,11 @@ public class OrderItem {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinTable(name = "order_id")
+    @JoinColumn(name = "order_id")
     private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinTable(name="product_id")
+    @JoinColumn(name="product_id")
     private Product product;
 
     private int quantity;
