@@ -19,7 +19,7 @@ public class PaymentController {
 
     private final PaymentService paymentService;
 
-    @Value("${stripe.webhook.secret}")
+    @Value("${STRIPE_WEBHOOK_SECRET}")
     private String stripeWebhookSecret;
 
     public PaymentController(PaymentService paymentService) {

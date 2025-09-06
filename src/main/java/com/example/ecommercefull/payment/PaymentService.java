@@ -35,7 +35,7 @@ public class PaymentService {
     private final CartRepository cartRepository;
     private final OrderRepository orderRepository;
 
-    @Value("${stripe.api.secretKey}")
+    @Value("${STRIPE_API_SECRETKEY}")
     private String stripesSecretKey;
 
     public PaymentService(UserRepository userRepository,
