@@ -5,6 +5,7 @@ import com.example.ecommercefull.auth.models.RoleEnum;
 import com.example.ecommercefull.auth.models.User;
 import com.example.ecommercefull.auth.repositories.UserRepository;
 import com.example.ecommercefull.cart.CartRepository;
+import com.example.ecommercefull.cart.DTOs.CartItemRequest;
 import com.example.ecommercefull.cart.DTOs.CartResponse;
 import com.example.ecommercefull.cart.models.Cart;
 import com.example.ecommercefull.cart.models.CartItem;
@@ -18,6 +19,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.annotation.DirtiesContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -34,6 +36,9 @@ public class CartApplicationTests {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    private Product product;
+    private Product product3;
+
     @BeforeEach
     public void setup() {
         cartRepository.deleteAll();
@@ -44,13 +49,13 @@ public class CartApplicationTests {
         User customerUser = userRepository.save(new User("customer", passwordEncoder.encode("password"), "TestCustomer", RoleEnum.ROLE_CUSTOMER));
 
 
-        Product product1 = productRepository.save(new Product("product", "product description", 19.99, 5, businessUser));
+        product = productRepository.save(new Product("product", "product description", 19.99, 5, businessUser));
         Product product2 = productRepository.save(new Product("product2", "another product description", 25.00, 10, businessUser));
+        product3 = productRepository.save(new Product("product3", "yet another product description", 39.99, 5, businessUser));
 
 
         Cart customerCart = customerUser.getCart();
-
-        customerCart.addCartItem(new CartItem(customerCart, product1, 2));
+        customerCart.addCartItem(new CartItem(customerCart, product, 2));
         customerCart.addCartItem(new CartItem(customerCart, product2, 1));
         cartRepository.save(customerCart);
     }
@@ -71,5 +76,63 @@ public class CartApplicationTests {
         assertThat(cartResponseBody.cartItems().get(1).quantity()).isEqualTo(1);
         assertThat(cartResponseBody.cartItems().get(0).price()).isEqualTo(19.99);
         assertThat(cartResponseBody.cartItems().get(1).price()).isEqualTo(25.00);
+    }
+
+    @Test
+    void shouldNotReturnCartToNoAuth() {
+        ResponseEntity<CartResponse> cartResponse = restTemplate
+                .getForEntity("/cart", CartResponse.class);
+        assertThat(cartResponse.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+    }
+
+    @Test
+    @DirtiesContext
+    void shouldAddProductToCart() {
+        CartItemRequest request = new CartItemRequest(product3.getId(),2);
+        ResponseEntity<CartResponse> response = restTemplate
+                .withBasicAuth("customer", "password")
+                .postForEntity("/cart/add", request, CartResponse.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().cartItems()).hasSize(3);
+        assertThat(response.getBody().cartItems().get(2).productName()).isEqualTo("product3");
+        assertThat(response.getBody().cartItems().get(2).quantity()).isEqualTo(2);
+        assertThat(response.getBody().cartItems().get(2).price()).isEqualTo(39.99);
+    }
+
+    @Test
+    void shouldNotAddNonExistentProductToCartTo() {
+        CartItemRequest request = new CartItemRequest(product3.getId() + 100000,2);
+        ResponseEntity<CartResponse> response = restTemplate
+                .withBasicAuth("customer", "password")
+                .postForEntity("/cart/add", request, CartResponse.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @Test
+    void shouldNotAddProductToCartToNoAuth() {
+        CartItemRequest request = new CartItemRequest(product3.getId(),2);
+        ResponseEntity<CartResponse> response = restTemplate
+                .postForEntity("/cart/add", request, CartResponse.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+    }
+
+    @Test
+    @DirtiesContext
+    void shouldRemoveProductFromCart() {
+        CartItemRequest request = new CartItemRequest(product.getId(),2);
+        ResponseEntity<CartResponse> response = restTemplate
+                .withBasicAuth("customer", "password")
+                .postForEntity("/cart/remove", request, CartResponse.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().cartItems()).hasSize(1);
+    }
+
+    @Test
+    void shouldNotRemoveNonExistentProductFromCartTo() {
+        CartItemRequest request = new CartItemRequest(product3.getId()+1000,1);
+        ResponseEntity<CartResponse> response = restTemplate
+                .withBasicAuth("customer", "password")
+                .postForEntity("/cart/remove", request, CartResponse.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

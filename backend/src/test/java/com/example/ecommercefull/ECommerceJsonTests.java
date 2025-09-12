@@ -136,6 +136,5 @@ public class ECommerceJsonTests {
         assertThat(parsedProducts[1].getPrice()).isEqualTo(19.99);
         assertThat(parsedProducts[1].getStock()).isEqualTo(5);
         assertThat(parsedProducts[1].getBusiness().getUsername()).isEqualTo("business");
-
     }
 }

@@ -1,8 +1,7 @@
-package com.example.ecommercefull.order.services;
+package com.example.ecommercefull.order;
 
 import com.example.ecommercefull.auth.repositories.UserRepository;
 import com.example.ecommercefull.order.DTOs.OrderResponse;
-import com.example.ecommercefull.order.OrderRepository;
 import com.example.ecommercefull.order.models.Order;
 import com.example.ecommercefull.order.models.OrderStatus;
 import org.springframework.stereotype.Service;

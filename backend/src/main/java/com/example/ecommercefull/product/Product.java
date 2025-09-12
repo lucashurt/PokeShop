@@ -20,7 +20,7 @@ public class Product {
     @JoinColumn(name="business_id")
     private Business business;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItem> cartItems;
 
     public Product() {}
