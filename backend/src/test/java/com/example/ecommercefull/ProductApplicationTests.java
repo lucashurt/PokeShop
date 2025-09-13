@@ -60,7 +60,7 @@ public class ProductApplicationTests {
         ProductRequest productRequest = new ProductRequest("widget","Test Widget Description",29.99,10);
         ResponseEntity<ProductResponse> productResponse = restTemplate
                 .withBasicAuth("business","password")
-                .postForEntity("/products", productRequest, ProductResponse.class);
+                .postForEntity("/api/products", productRequest, ProductResponse.class);
         assertThat(productResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
@@ -69,7 +69,7 @@ public class ProductApplicationTests {
         ProductRequest productRequest = new ProductRequest("widget","Test Widget Description",29.99,10);
         ResponseEntity<ProductResponse> productResponse = restTemplate
                 .withBasicAuth("customer","password")
-                .postForEntity("/products", productRequest, ProductResponse.class);
+                .postForEntity("/api/products", productRequest, ProductResponse.class);
         assertThat(productResponse.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     }
 
@@ -78,7 +78,7 @@ public class ProductApplicationTests {
         ProductRequest productRequest = new ProductRequest("widget","Test Widget Description",29.99,10);
         ResponseEntity<ProductResponse> productResponse = restTemplate
                 .withBasicAuth("randomUser","password")
-                .postForEntity("/products", productRequest, ProductResponse.class);
+                .postForEntity("/api/products", productRequest, ProductResponse.class);
         assertThat(productResponse.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     }
 
@@ -86,7 +86,7 @@ public class ProductApplicationTests {
     public void shouldReturnProductToCustomer(){
         ResponseEntity<ProductResponse> response = restTemplate
                 .withBasicAuth("customer","password")
-                .getForEntity("/products/" + savedProduct.getId(), ProductResponse.class);
+                .getForEntity("/api/products/" + savedProduct.getId(), ProductResponse.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().id()).isEqualTo(savedProduct.getId());
@@ -100,7 +100,7 @@ public class ProductApplicationTests {
     public void shouldReturnProductToBusiness(){
         ResponseEntity<ProductResponse> response = restTemplate
                 .withBasicAuth("business","password")
-                .getForEntity("/products/" + savedProduct.getId(), ProductResponse.class);
+                .getForEntity("/api/products/" + savedProduct.getId(), ProductResponse.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
@@ -108,7 +108,7 @@ public class ProductApplicationTests {
     public void shouldNotReturnNonExistingProduct(){
         ResponseEntity<ProductResponse> response = restTemplate
                 .withBasicAuth("business","password")
-                .getForEntity("/products/" + savedProduct.getId() + 1, ProductResponse.class);
+                .getForEntity("/api/products/" + savedProduct.getId() + 1, ProductResponse.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
@@ -116,7 +116,7 @@ public class ProductApplicationTests {
     public void shouldReturnBusinessInventory(){
         ResponseEntity<String> response = restTemplate
                 .withBasicAuth("business","password")
-                .getForEntity("/products/business/inventory", String.class);
+                .getForEntity("/api/products/business/inventory", String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         DocumentContext json = JsonPath.parse(response.getBody());
         int length = json.read("$.length()");

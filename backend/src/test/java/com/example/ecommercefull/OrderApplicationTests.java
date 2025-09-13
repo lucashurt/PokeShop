@@ -82,7 +82,7 @@ public class OrderApplicationTests {
     void shouldReturnOrderHistory() {
         ResponseEntity<String> response = restTemplate
                 .withBasicAuth("customer", "password")
-                .getForEntity("/orders", String.class);
+                .getForEntity("/api/orders", String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         DocumentContext json = JsonPath.parse(response.getBody());
         int length = json.read("$.length()");
@@ -103,7 +103,7 @@ public class OrderApplicationTests {
     @Test
     void shouldNotReturnOrderHistoryOfLoggedOutUser(){
         ResponseEntity<String> response = restTemplate
-                .getForEntity("/orders", String.class);
+                .getForEntity("/api/orders", String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     }
 
@@ -111,7 +111,7 @@ public class OrderApplicationTests {
     void shouldReturnSingleOrder(){
         ResponseEntity<OrderResponse> response = restTemplate
                 .withBasicAuth("customer", "password")
-                .getForEntity("/orders/" + order.getId(), OrderResponse.class);
+                .getForEntity("/api/orders/" + order.getId(), OrderResponse.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().orderId()).isNotNull();
         assertThat(response.getBody().orderId()).isEqualTo(order.getId());
@@ -126,7 +126,7 @@ public class OrderApplicationTests {
     void shouldNotReturnNonExistentOrder(){
         ResponseEntity<OrderResponse> response = restTemplate
                 .withBasicAuth("customer", "password")
-                .getForEntity("/orders/" + order.getId()+3, OrderResponse.class);
+                .getForEntity("/api/orders/" + order.getId()+3, OrderResponse.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
@@ -134,7 +134,7 @@ public class OrderApplicationTests {
     void shouldNotReturnOtherUsersOrder(){
         ResponseEntity<OrderResponse> response = restTemplate
                 .withBasicAuth("business", "password")
-                .getForEntity("/orders/" + order.getId(), OrderResponse.class);
+                .getForEntity("/api/orders/" + order.getId(), OrderResponse.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
@@ -144,7 +144,7 @@ public class OrderApplicationTests {
         OrderStatusRequest request = new OrderStatusRequest(OrderStatus.PROCESSING);
         ResponseEntity<OrderResponse> response = restTemplate
                 .withBasicAuth("business", "password")
-                .postForEntity("/orders/" + order.getId()  +"/status", request,OrderResponse.class);
+                .postForEntity("/api/orders/" + order.getId()  +"/status", request,OrderResponse.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().orderStatus()).isEqualTo(OrderStatus.PROCESSING);
     }
@@ -154,7 +154,7 @@ public class OrderApplicationTests {
         OrderStatusRequest request = new OrderStatusRequest(OrderStatus.PROCESSING);
         ResponseEntity<OrderResponse> response = restTemplate
                 .withBasicAuth("customer", "password")
-                .postForEntity("/orders/" + order.getId()  +"/status", request,OrderResponse.class);
+                .postForEntity("/api/orders/" + order.getId()  +"/status", request,OrderResponse.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     }
 
@@ -163,7 +163,7 @@ public class OrderApplicationTests {
         OrderStatusRequest request = new OrderStatusRequest(OrderStatus.PROCESSING);
         ResponseEntity<OrderResponse> response = restTemplate
                 .withBasicAuth("shadyBusiness", "password")
-                .postForEntity("/orders/" + order.getId()  +"/status", request,OrderResponse.class);
+                .postForEntity("/api/orders/" + order.getId()  +"/status", request,OrderResponse.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     }
 
@@ -172,7 +172,7 @@ public class OrderApplicationTests {
     void shouldCancelOrder(){
         ResponseEntity<String> response = restTemplate
                 .withBasicAuth("customer", "password")
-                .exchange("/orders/" + order.getId()  +"/cancel", HttpMethod.DELETE,null,String.class);
+                .exchange("/api/orders/" + order.getId()  +"/cancel", HttpMethod.DELETE,null,String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo("Order Cancelled");
     }
@@ -182,7 +182,7 @@ public class OrderApplicationTests {
     void shouldNotCancelAnotherUsersOrder(){
         ResponseEntity<String> response = restTemplate
                 .withBasicAuth("business", "password")
-                .exchange("/orders/" + order.getId()  +"/cancel", HttpMethod.DELETE,null,String.class);
+                .exchange("/api/orders/" + order.getId()  +"/cancel", HttpMethod.DELETE,null,String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

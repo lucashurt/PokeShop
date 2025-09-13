@@ -86,7 +86,7 @@ class PaymentApplicationTests {
 
         ResponseEntity<PaymentResponse> response = restTemplate
                 .withBasicAuth("customer", "password")
-                .postForEntity("/payment/create-intent", request, PaymentResponse.class);
+                .postForEntity("/api/payment/create-intent", request, PaymentResponse.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
@@ -115,7 +115,7 @@ class PaymentApplicationTests {
 
         ResponseEntity<PaymentResponse> response = restTemplate
                 .withBasicAuth("emptycustomer", "password")
-                .postForEntity("/payment/create-intent", request, PaymentResponse.class);
+                .postForEntity("/api/payment/create-intent", request, PaymentResponse.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
@@ -129,7 +129,7 @@ class PaymentApplicationTests {
         PaymentRequest request = new PaymentRequest("pm_card_visa", "usd");
 
         ResponseEntity<PaymentResponse> response = restTemplate
-                .postForEntity("/payment/create-intent", request, PaymentResponse.class);
+                .postForEntity("/api/payment/create-intent", request, PaymentResponse.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     }
@@ -148,7 +148,7 @@ class PaymentApplicationTests {
 
         ResponseEntity<CheckoutResponse> response = restTemplate
                 .withBasicAuth("customer", "password")
-                .postForEntity("/payment/create-checkout-session", request, CheckoutResponse.class);
+                .postForEntity("/api/payment/create-checkout-session", request, CheckoutResponse.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
@@ -177,7 +177,7 @@ class PaymentApplicationTests {
 
         ResponseEntity<CheckoutResponse> response = restTemplate
                 .withBasicAuth("emptycustomer2", "password")
-                .postForEntity("/payment/create-checkout-session", request, CheckoutResponse.class);
+                .postForEntity("/api/payment/create-checkout-session", request, CheckoutResponse.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -191,7 +191,7 @@ class PaymentApplicationTests {
         );
 
         ResponseEntity<CheckoutResponse> response = restTemplate
-                .postForEntity("/payment/create-checkout-session", request, CheckoutResponse.class);
+                .postForEntity("/api/payment/create-checkout-session", request, CheckoutResponse.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     }
@@ -201,7 +201,7 @@ class PaymentApplicationTests {
         String webhookPayload = createWebhookPayload("payment_intent.succeeded", "pi_test_123", "123");
 
         ResponseEntity<String> response = restTemplate
-                .postForEntity("/payment/webhook", webhookPayload, String.class);
+                .postForEntity("/api/payment/webhook", webhookPayload, String.class);
 
         assertThat(response.getStatusCode()).isIn(HttpStatus.BAD_REQUEST, HttpStatus.UNAUTHORIZED);
     }
@@ -215,7 +215,7 @@ class PaymentApplicationTests {
         HttpEntity<String> request = new HttpEntity<>(webhookPayload, headers);
 
         ResponseEntity<String> response = restTemplate
-                .postForEntity("/payment/webhook", request, String.class);
+                .postForEntity("/api/payment/webhook", request, String.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
@@ -227,7 +227,7 @@ class PaymentApplicationTests {
 
         ResponseEntity<PaymentResponse> response = restTemplate
                 .withBasicAuth("customer", "password")
-                .postForEntity("/payment/create-intent", request, PaymentResponse.class);
+                .postForEntity("/api/payment/create-intent", request, PaymentResponse.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
@@ -253,7 +253,7 @@ class PaymentApplicationTests {
 
         ResponseEntity<CheckoutResponse> response = restTemplate
                 .withBasicAuth("customer", "password")
-                .postForEntity("/payment/create-checkout-session", request, CheckoutResponse.class);
+                .postForEntity("/api/payment/create-checkout-session", request, CheckoutResponse.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(orderRepository.count()).isEqualTo(initialOrderCount + 1);
@@ -275,7 +275,7 @@ class PaymentApplicationTests {
 
         ResponseEntity<PaymentResponse> response = restTemplate
                 .withBasicAuth("customer", "password")
-                .postForEntity("/payment/create-intent", request, PaymentResponse.class);
+                .postForEntity("/api/payment/create-intent", request, PaymentResponse.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();

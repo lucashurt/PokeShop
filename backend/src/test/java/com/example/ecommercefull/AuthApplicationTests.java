@@ -41,7 +41,7 @@ public class AuthApplicationTests {
     @DirtiesContext
     void shouldCreateUser() {
         RegisterRequest registerRequest = new RegisterRequest("lucas","password","lucas hurtado","CUSTOMER");
-        AuthResponse authResponse = restTemplate.postForObject("/auth/register", registerRequest, AuthResponse.class);
+        AuthResponse authResponse = restTemplate.postForObject("/api/auth/register", registerRequest, AuthResponse.class);
         assertThat(authResponse.message()).isEqualTo("success");
         User user = userRepository.findByUsername("lucas").get();
         assertThat(user.getUsername()).isEqualTo("lucas");
@@ -52,7 +52,7 @@ public class AuthApplicationTests {
     @Test
     void shouldCreateBusinessUser() {
         RegisterRequest registerRequest = new RegisterRequest("lucas","password","lucas hurtado","BUSINESS");
-        AuthResponse authResponse = restTemplate.postForObject("/auth/register", registerRequest, AuthResponse.class);
+        AuthResponse authResponse = restTemplate.postForObject("/api/auth/register", registerRequest, AuthResponse.class);
         assertThat(authResponse.message()).isEqualTo("success");
         User user = userRepository.findByUsername("lucas").get();
         assertThat(user.getUsername()).isEqualTo("lucas");
@@ -63,14 +63,14 @@ public class AuthApplicationTests {
     @Test
     void shouldNotCreateUserWithTakenUsername(){
         RegisterRequest registerRequest = new RegisterRequest("yuly","password","yulissa morejon","CUSTOMER");
-        AuthResponse authResponse = restTemplate.postForObject("/auth/register", registerRequest, AuthResponse.class);
+        AuthResponse authResponse = restTemplate.postForObject("/api/auth/register", registerRequest, AuthResponse.class);
         assertThat(authResponse.message()).isEqualTo("username already exists");
     }
 
     @Test
     void shouldNotCreateUserWithIncorrectRole(){
         RegisterRequest registerRequest = new RegisterRequest("lucas","password","yulissa morejon","BAD_ROLE");
-        AuthResponse authResponse = restTemplate.postForObject("/auth/register", registerRequest, AuthResponse.class);
+        AuthResponse authResponse = restTemplate.postForObject("/api/auth/register", registerRequest, AuthResponse.class);
         assertThat(authResponse.message()).isEqualTo("role does not exist");
     }
 
@@ -78,7 +78,7 @@ public class AuthApplicationTests {
     void shouldReturnAuthenticatedUser(){
         AuthRequest authRequest = new AuthRequest("yuly","password");
         AuthResponse authResponse = restTemplate
-                .postForObject("/auth/login", authRequest, AuthResponse.class);
+                .postForObject("/api/auth/login", authRequest, AuthResponse.class);
         assertThat(authResponse.message()).isEqualTo("success");
     }
 
@@ -86,7 +86,7 @@ public class AuthApplicationTests {
     void shouldAuthenticateBusinessUser(){
         AuthRequest authRequest = new AuthRequest("marlon","password");
         AuthResponse authResponse = restTemplate
-                .postForObject("/auth/login", authRequest, AuthResponse.class);
+                .postForObject("/api/auth/login", authRequest, AuthResponse.class);
         assertThat(authResponse.message()).isEqualTo("success");
     }
 
@@ -94,14 +94,14 @@ public class AuthApplicationTests {
     void shouldNotReturnIncorrectPassword(){
         AuthRequest authRequest = new AuthRequest("yuly","wrongPassword");
         AuthResponse authResponse = restTemplate
-                .postForObject("/auth/login", authRequest, AuthResponse.class);
+                .postForObject("/api/auth/login", authRequest, AuthResponse.class);
         assertThat(authResponse.message()).isEqualTo("invalid credentials");
     }
     @Test
     void shouldNotReturnIncorrectUsername() {
         AuthRequest authRequest = new AuthRequest("yuky", "password");
         AuthResponse authResponse = restTemplate
-                .postForObject("/auth/login", authRequest, AuthResponse.class);
+                .postForObject("/api/auth/login", authRequest, AuthResponse.class);
         assertThat(authResponse.message()).isEqualTo("invalid credentials");
     }
     }

@@ -64,7 +64,7 @@ public class CartApplicationTests {
     void shouldReturnCart() {
         ResponseEntity<CartResponse> cartResponse = restTemplate
                 .withBasicAuth("customer", "password")
-                .getForEntity("/cart", CartResponse.class);
+                .getForEntity("/api/cart", CartResponse.class);
         assertThat(cartResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
         CartResponse cartResponseBody = cartResponse.getBody();
         assertThat(cartResponseBody.cartId()).isNotNull();
@@ -81,7 +81,7 @@ public class CartApplicationTests {
     @Test
     void shouldNotReturnCartToNoAuth() {
         ResponseEntity<CartResponse> cartResponse = restTemplate
-                .getForEntity("/cart", CartResponse.class);
+                .getForEntity("/api/cart", CartResponse.class);
         assertThat(cartResponse.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     }
 
@@ -91,7 +91,7 @@ public class CartApplicationTests {
         CartItemRequest request = new CartItemRequest(product3.getId(),2);
         ResponseEntity<CartResponse> response = restTemplate
                 .withBasicAuth("customer", "password")
-                .postForEntity("/cart/add", request, CartResponse.class);
+                .postForEntity("/api/cart/add", request, CartResponse.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().cartItems()).hasSize(3);
         assertThat(response.getBody().cartItems().get(2).productName()).isEqualTo("product3");
@@ -104,7 +104,7 @@ public class CartApplicationTests {
         CartItemRequest request = new CartItemRequest(product3.getId() + 100000,2);
         ResponseEntity<CartResponse> response = restTemplate
                 .withBasicAuth("customer", "password")
-                .postForEntity("/cart/add", request, CartResponse.class);
+                .postForEntity("/api/cart/add", request, CartResponse.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
@@ -112,7 +112,7 @@ public class CartApplicationTests {
     void shouldNotAddProductToCartToNoAuth() {
         CartItemRequest request = new CartItemRequest(product3.getId(),2);
         ResponseEntity<CartResponse> response = restTemplate
-                .postForEntity("/cart/add", request, CartResponse.class);
+                .postForEntity("/api/cart/add", request, CartResponse.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     }
 
@@ -122,7 +122,7 @@ public class CartApplicationTests {
         CartItemRequest request = new CartItemRequest(product.getId(),2);
         ResponseEntity<CartResponse> response = restTemplate
                 .withBasicAuth("customer", "password")
-                .postForEntity("/cart/remove", request, CartResponse.class);
+                .postForEntity("/api/cart/remove", request, CartResponse.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().cartItems()).hasSize(1);
     }
@@ -132,7 +132,7 @@ public class CartApplicationTests {
         CartItemRequest request = new CartItemRequest(product3.getId()+1000,1);
         ResponseEntity<CartResponse> response = restTemplate
                 .withBasicAuth("customer", "password")
-                .postForEntity("/cart/remove", request, CartResponse.class);
+                .postForEntity("/api/cart/remove", request, CartResponse.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

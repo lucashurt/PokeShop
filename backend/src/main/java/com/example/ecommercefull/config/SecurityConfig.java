@@ -28,8 +28,8 @@ public class SecurityConfig {
                 .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/h2-console/**").permitAll() // allow H2 console
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/payment/webhook").permitAll()
+                        .requestMatchers("api/auth/**").permitAll()
+                        .requestMatchers("api/payment/webhook").permitAll()
                         .anyRequest().authenticated());
         return http.build();
     }
