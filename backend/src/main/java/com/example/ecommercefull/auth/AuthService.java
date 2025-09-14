@@ -3,6 +3,7 @@ package com.example.ecommercefull.auth;
 import com.example.ecommercefull.auth.DTOs.AuthRequest;
 import com.example.ecommercefull.auth.DTOs.AuthResponse;
 import com.example.ecommercefull.auth.DTOs.RegisterRequest;
+import com.example.ecommercefull.auth.JWT.JwtUtil;
 import com.example.ecommercefull.auth.models.Business;
 import com.example.ecommercefull.auth.models.RoleEnum;
 import com.example.ecommercefull.auth.models.User;
@@ -16,10 +17,12 @@ import java.util.Optional;
 public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
-    public AuthService(UserRepository userRepository,PasswordEncoder passwordEncoder) {
+    public AuthService(UserRepository userRepository,PasswordEncoder passwordEncoder,JwtUtil jwtUtil) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtUtil = new JwtUtil();
     }
 
     public AuthResponse register(RegisterRequest registerRequest) {
@@ -48,7 +51,9 @@ public class AuthService {
         user.setFullName(registerRequest.fullName());
         user.setRole(userRole);
         userRepository.save(user);
-        return new AuthResponse("success");
+
+        String token = jwtUtil.generateToken(user.getUsername(),user.getRole().name(),user.getId());
+        return new AuthResponse("success",token,user.getRole().name(),user.getId());
     }
 
     public AuthResponse authenticate(AuthRequest authRequest) {
@@ -60,7 +65,9 @@ public class AuthService {
         if (!passwordEncoder.matches(authRequest.password(), user.getPassword())) {
             return new AuthResponse("invalid credentials");
         }
-        return new AuthResponse("success");
+        String token = jwtUtil.generateToken(user.getUsername(), user.getRole().name(), user.getId());
+
+        return new AuthResponse("success",token,user.getRole().name(),user.getId());
     }
 
 }
