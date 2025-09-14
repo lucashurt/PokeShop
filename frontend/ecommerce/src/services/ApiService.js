@@ -1,11 +1,77 @@
 const API_BASE_URL = "/api";
 
 class ApiService{
+
+    constructor(){
+        this.token = this.getStoredToken();
+    }
+
+    getStoredToken(){
+        return localStorage.getItem('jwt_token')
+    }
+
+    setToken(token){
+        this.token = token;
+        if(token){
+            localStorage.setItem('jwt_token',token);
+        }
+        else{
+            localStorage.removeItem('jwt_token');
+        }
+    }
+
+    getAuthHeaders(){
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+        if(this.token){
+            headers['Authorization'] = `Bearer ${this.token}`
+        }
+        return headers;
+    }
+
+    isAuthenticated(){
+        return !!this.token && !this.isTokenExpired();
+    }
+
+    isTokenExpired(){
+        if(!this.token) return true;
+        try{
+            const payload = JSON.parse(atob(this.token.split('.')[1]));
+            const currentTime = Date.now() / 1000
+            return payload.exp < currentTime;
+        }
+        catch(error){
+            return true;
+        }
+    }
+
+    getUserInfo(){
+        if(!this.token) return null;
+
+        try{
+            const payload = JSON.parse(atob(this.token.split('.')[1]));
+            return{
+                username: payload.sub,
+                role: payload.role,
+                userId: payload.userId,
+                exp: payload.exp,
+                iat: payload.iat
+            };
+        }
+        catch (error) {
+            return null;
+        }
+    }
+
+    logout(){
+        this.setToken(null)
+    }
     async request(endpoint,options={}){
         const url = `${API_BASE_URL}${endpoint}`;
         const config = {
             headers:{
-                'Content-Type': 'application/json',
+                ...this.getAuthHeaders(),
                 ...options.headers
             },
             ...options,
@@ -18,6 +84,11 @@ class ApiService{
         try{
             const response = await fetch(url,config);
 
+            if(response.status === 401){
+                this.logout();
+                throw new Error('Unauthorized must login')
+            }
+
             if(!response.ok){
                 const errorText = await response.text();
                 throw new Error(`HTTP ${response.status}: ${errorText}`)
@@ -25,7 +96,7 @@ class ApiService{
 
             const contentType = response.headers.get('content-type');
             if(contentType && contentType.includes('application/json')){
-                return await response.json;
+                return await response.json();
             }
             return await response.text();
         }
@@ -36,17 +107,29 @@ class ApiService{
     }
 
     async login(username,password){
-        return await this.request('/auth/login', {
+        const response = await this.request('/auth/login', {
             method: 'POST',
             body: {username, password}
         });
+
+        if(response.token){
+            this.setToken(response.token);
+        }
+
+        return response;
     }
 
     async register(username,password,fullName,role){
-        return await this.request('/auth/register', {
+        const response =  await this.request('/auth/register', {
             method: 'POST',
             body: {username, password, fullName, role}
         });
+
+        if(response.token){
+            this.setToken(response.token)
+        }
+
+        return response;
     }
 
     async getProduct(productId){
@@ -76,7 +159,7 @@ class ApiService{
     }
 
     async removeFromCart(productId,quantity = 0){
-        return this.request('/cart/add',{
+        return this.request('/cart/remove',{
             method:'POST',
             body:{productId,quantity}
         });

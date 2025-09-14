@@ -1,6 +1,6 @@
 package com.example.ecommercefull.config;
 
-import com.example.ecommercefull.auth.JWT.JwtAuthenticationFilter;
+import com.example.ecommercefull.auth.JwtAuthenticationFilter;
 import com.example.ecommercefull.auth.repositories.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,11 +29,12 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilter(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
+                .cors(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/h2-console/**").permitAll() // allow H2 console
-                        .requestMatchers("api/auth/**").permitAll()
-                        .requestMatchers("api/payment/webhook").permitAll()
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/payment/webhook").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 

@@ -1,4 +1,4 @@
-package com.example.ecommercefull.auth.JWT;
+package com.example.ecommercefull.auth.util;
 
 import com.example.ecommercefull.auth.models.User;
 import org.springframework.security.core.Authentication;

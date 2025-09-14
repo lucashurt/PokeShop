@@ -1,7 +1,8 @@
-package com.example.ecommercefull.auth.JWT;
+package com.example.ecommercefull.auth;
 
 import com.example.ecommercefull.auth.models.User;
 import com.example.ecommercefull.auth.repositories.UserRepository;
+import com.example.ecommercefull.auth.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,7 +31,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException{
         String authHeader = request.getHeader("Authorization");
-        if (authHeader == null || authHeader.startsWith("Bearer ")) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -41,10 +42,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 String username = jwtUtil.getUsernameFromToken(jwt);
                 String role = jwtUtil.getRole(jwt);
 
-                Optional <User> user = userRepository.findByUsername(username);
+                Optional<User> user = userRepository.findByUsername(username);
                 if(user.isPresent()){
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                            user,
+                            user.get(),
                             null,
                             List.of(new SimpleGrantedAuthority(role))
                     );

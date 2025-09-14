@@ -3,7 +3,7 @@ package com.example.ecommercefull.auth;
 import com.example.ecommercefull.auth.DTOs.AuthRequest;
 import com.example.ecommercefull.auth.DTOs.AuthResponse;
 import com.example.ecommercefull.auth.DTOs.RegisterRequest;
-import com.example.ecommercefull.auth.JWT.JwtUtil;
+import com.example.ecommercefull.auth.util.JwtUtil;
 import com.example.ecommercefull.auth.models.Business;
 import com.example.ecommercefull.auth.models.RoleEnum;
 import com.example.ecommercefull.auth.models.User;
@@ -22,7 +22,7 @@ public class AuthService {
     public AuthService(UserRepository userRepository,PasswordEncoder passwordEncoder,JwtUtil jwtUtil) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.jwtUtil = new JwtUtil();
+        this.jwtUtil = jwtUtil;
     }
 
     public AuthResponse register(RegisterRequest registerRequest) {
