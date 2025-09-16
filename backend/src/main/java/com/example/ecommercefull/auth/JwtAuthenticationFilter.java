@@ -31,31 +31,47 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException{
         String authHeader = request.getHeader("Authorization");
+        System.out.println("JwtAuthenticationFilter - Authorization header: " + authHeader);
+
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            System.out.println("JwtAuthenticationFilter - No Authorization header or wrong format, skipping filter.");
             filterChain.doFilter(request, response);
             return;
         }
-        String jwt = authHeader.substring(7);
 
-        try{
+        String jwt = authHeader.substring(7);
+        System.out.println("JwtAuthenticationFilter - Extracted JWT: " + jwt);
+
+        try {
             if(jwtUtil.isValid(jwt)){
+                System.out.println("JwtAuthenticationFilter - JWT is valid");
                 String username = jwtUtil.getUsernameFromToken(jwt);
                 String role = jwtUtil.getRole(jwt);
+                System.out.println("JwtAuthenticationFilter - Username from token: " + username);
+                System.out.println("JwtAuthenticationFilter - Role from token: " + role);
 
                 Optional<User> user = userRepository.findByUsername(username);
                 if(user.isPresent()){
+                    System.out.println("JwtAuthenticationFilter - User found in DB: " + username);
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                            user.get(),
+                            user.get().getUsername(),
                             null,
                             List.of(new SimpleGrantedAuthority(role))
                     );
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
+                    System.out.println("JwtAuthenticationFilter - SecurityContext updated with authenticated user");
+                } else {
+                    System.out.println("JwtAuthenticationFilter - User not found in DB: " + username);
                 }
+            } else {
+                System.out.println("JwtAuthenticationFilter - JWT is invalid");
             }
-        }catch (Exception e){
-            logger.error("JWT Authentication Error");
+        } catch (Exception e) {
+            System.out.println("JwtAuthenticationFilter - Exception during JWT validation: " + e.getMessage());
+            e.printStackTrace();
         }
+
         filterChain.doFilter(request, response);
     }
 }
