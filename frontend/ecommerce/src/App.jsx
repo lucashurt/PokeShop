@@ -1,20 +1,34 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider } from "./AuthContext.jsx";
+import { AuthProvider, useAuth } from "./AuthContext.jsx";
 import Login from "./pages/authentication/Login.jsx";
 import Register from "./pages/authentication/Registration.jsx";
+import DashboardLayout from "./components/layout/DashboardLayout.jsx";
+import BusinessDashboard from "./pages/dashboard/BusinessDashboard.jsx";
 
-// Temporary dashboard placeholder
-function Dashboard() {
-    return (
-        <div className="min-h-screen flex items-center justify-center" style={{ background: '#0f172a' }}>
-            <div className="text-center">
-                <h1 className="text-4xl font-bold mb-4" style={{ color: '#fbbf24' }}>
-                    Dashboard Coming Soon
-                </h1>
-                <p style={{ color: '#cbd5e1' }}>You're logged in! Dashboard will be built in Day 2.</p>
+// Protected Route wrapper
+function ProtectedRoute({ children }) {
+    const { isAuthenticated, loading } = useAuth();
+
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center" style={{ background: '#0f172a' }}>
+                <div className="text-4xl">⚡</div>
             </div>
-        </div>
+        );
+    }
+
+    return isAuthenticated() ? children : <Navigate to="/login" replace />;
+}
+
+// Dashboard Router - determines which dashboard to show based on role
+function DashboardRouter() {
+    const { user } = useAuth();
+
+    return (
+        <DashboardLayout>
+            <BusinessDashboard />
+        </DashboardLayout>
     );
 }
 
@@ -25,8 +39,15 @@ export default function App() {
                 <Routes>
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/" element={<Navigate to="/login" replace />} />
+                    <Route
+                        path="/dashboard"
+                        element={
+                            <ProtectedRoute>
+                                <DashboardRouter />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route path="/" element={<Navigate to="/dashboard" replace />} />
                 </Routes>
             </Router>
         </AuthProvider>
