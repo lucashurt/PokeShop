@@ -5,6 +5,8 @@ import Login from "./pages/authentication/Login.jsx";
 import Register from "./pages/authentication/Registration.jsx";
 import DashboardLayout from "./components/layout/DashboardLayout.jsx";
 import BusinessDashboard from "./pages/dashboard/BusinessDashboard.jsx";
+import CustomerDashboard from "./pages/dashboard/CustomerDashboard.jsx";
+
 
 // Protected Route wrapper
 function ProtectedRoute({ children }) {
@@ -27,7 +29,7 @@ function DashboardRouter() {
 
     return (
         <DashboardLayout>
-            <BusinessDashboard />
+            {user?.role == "ROLE_BUSINESS" ? <BusinessDashboard/> : <CustomerDashboard/>}
         </DashboardLayout>
     );
 }
