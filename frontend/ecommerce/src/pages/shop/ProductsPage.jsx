@@ -9,11 +9,21 @@ const ProductsPage = () => {
     const [error, setError] = useState('');
     const [searchInput, setSearchInput] = useState('');
     const [activeFilter, setActiveFilter] = useState('all');
+    const [notification, setNotification] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
         loadAllProducts();
     }, []);
+
+    useEffect(() => {
+        if (notification) {
+            const timer = setTimeout(() => {
+                setNotification(null);
+            }, 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [notification]);
 
     const loadAllProducts = async () => {
         try {
@@ -56,7 +66,17 @@ const ProductsPage = () => {
     const handleAddToCart = async (productId, productName) => {
         try {
             await ApiService.addToCart(productId, 1);
-            alert(`${productName} added to cart!`);
+            const updateStock = (products) =>
+                products.map(product =>
+                    product.id === productId
+                        ? { ...product, stock: product.stock - 1 }
+                        : product
+                );
+            setAllProducts(prevProducts => updateStock(prevProducts));
+            setFilteredProducts(prevProducts => updateStock(prevProducts));
+
+            setNotification(`${productName} added to cart!`);
+            setError(''); // Clear any previous errors
         } catch (err) {
             setError('Failed to add to cart: ' + err.message);
         }
@@ -78,6 +98,26 @@ const ProductsPage = () => {
 
     return (
         <div className="space-y-6">
+            {/* Success Notification */}
+            {notification && (
+                <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 animate-slide-down">
+                    <div className="bg-green-500 text-white px-6 py-4 rounded-lg shadow-lg flex items-center gap-3 min-w-[300px]">
+                        <svg className="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span className="font-medium">{notification}</span>
+                        <button
+                            onClick={() => setNotification(null)}
+                            className="ml-auto text-white hover:text-gray-200"
+                        >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            )}
+
             {/* Header */}
             <div className="flex justify-between items-center">
                 <div>
