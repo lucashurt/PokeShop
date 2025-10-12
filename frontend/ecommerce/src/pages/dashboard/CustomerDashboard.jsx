@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';  // Add this import
 import ApiService from '../../services/ApiService';
 
 const CustomerDashboard = () => {
@@ -6,6 +7,7 @@ const CustomerDashboard = () => {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const navigate = useNavigate();  // Add this line
 
     useEffect(() => {
         loadData();
@@ -113,7 +115,9 @@ const CustomerDashboard = () => {
                         <p className="text-sm font-medium text-black">Quick Actions</p>
                         <p className="text-2xl font-bold text-black mt-1">Browse</p>
                     </div>
-                    <button className="w-full py-3 bg-black text-white font-medium rounded hover:bg-gray-900 transition-colors">
+                    <button
+                        onClick={() => navigate('/products')}
+                        className="w-full py-3 bg-black text-white font-medium rounded hover:bg-gray-900 transition-colors">
                         View Products
                     </button>
                 </div>

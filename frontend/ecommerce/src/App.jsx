@@ -6,7 +6,7 @@ import Register from "./pages/authentication/Registration.jsx";
 import DashboardLayout from "./components/layout/DashboardLayout.jsx";
 import BusinessDashboard from "./pages/dashboard/BusinessDashboard.jsx";
 import CustomerDashboard from "./pages/dashboard/CustomerDashboard.jsx";
-
+import ProductsPage from "./pages/shop/ProductsPage.jsx";  // Add this import
 
 // Protected Route wrapper
 function ProtectedRoute({ children }) {
@@ -46,6 +46,17 @@ export default function App() {
                         element={
                             <ProtectedRoute>
                                 <DashboardRouter />
+                            </ProtectedRoute>
+                        }
+                    />
+                    {/* Add products route */}
+                    <Route
+                        path="/products"
+                        element={
+                            <ProtectedRoute>
+                                <DashboardLayout>
+                                    <ProductsPage />
+                                </DashboardLayout>
                             </ProtectedRoute>
                         }
                     />
