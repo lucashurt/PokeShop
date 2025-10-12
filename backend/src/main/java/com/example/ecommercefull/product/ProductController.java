@@ -24,7 +24,13 @@ public class ProductController {
 
     @GetMapping("/{requestedBusiness}/inventory")
     public ResponseEntity<List<ProductResponse>> getProducts(@PathVariable String requestedBusiness) {
-        List<ProductResponse> products = productService.findAll(requestedBusiness);
+        List<ProductResponse> products = productService.findAllByBusiness(requestedBusiness);
+        return ResponseEntity.ok(products);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ProductResponse>> getAllProducts() {
+        List<ProductResponse> products = productService.getAllProducts();
         return ResponseEntity.ok(products);
     }
 

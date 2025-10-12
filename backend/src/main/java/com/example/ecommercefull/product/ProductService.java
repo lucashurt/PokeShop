@@ -51,7 +51,7 @@ public class ProductService {
         return ProductResponse.fromEntity(product);
     }
 
-    public List<ProductResponse> findAll(String username){
+    public List<ProductResponse> findAllByBusiness(String username){
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -61,6 +61,13 @@ public class ProductService {
         Business business = (Business)user;
 
         return productRepository.findAllByBusinessId(business.getId())
+                .stream()
+                .map(ProductResponse::fromEntity)
+                .toList();
+    }
+
+    public List<ProductResponse> getAllProducts() {
+        return productRepository.findAll()
                 .stream()
                 .map(ProductResponse::fromEntity)
                 .toList();
