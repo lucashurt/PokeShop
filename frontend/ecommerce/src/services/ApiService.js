@@ -140,6 +140,10 @@ class ApiService{
         return this.request(`/products/${businessName}/inventory`)
     }
 
+    async getAllProducts(){
+        return this.request('/products')
+    }
+
     async createProduct(name,description,price,stock){
         return this.request(`/products`,{
             method:'POST',
